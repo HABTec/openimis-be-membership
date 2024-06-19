@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate PDF Slip</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center">
+    <div class="flex w-full max-w-5xl bg-white shadow-md rounded-lg">
+        
+        <div id="root" class="w-3/4 p-6"></div>
+    </div>
+
+    <!-- React and ReactDOM CDN -->
+    <script src="https://unpkg.com/react@17/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.production.min.js"></script>
+    <!-- Babel CDN for JSX transformation -->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- Your React code -->
+    {% verbatim %}
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [insureeUuid, setInsureeUuid] = useState("");
+            const [base64Pdf, setBase64Pdf] = useState(null);
+            const [error, setError] = useState(null);
+            const [uuidList, setUuidList] = useState([]);
+
+            useEffect(() => {
+                const storedUuids = JSON.parse(localStorage.getItem('uuidList')) || [];
+                setUuidList(storedUuids);
+            }, []);
+
+            const handleSubmit = async (event) => {
+                event.preventDefault();
+                setError(null);
+                setBase64Pdf(null);
+
+                const query = `
+                    mutation {
+                      generatePdfSlip(insureeUuid: "${insureeUuid}") {
+                        base64Pdf
+                      }
+                    }
+                `;
+
+                const response = await fetch('/api/graphql', {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ query })
+                });
+
+                const result = await response.json();
+
+                if (result.errors) {
+                    setError(result.errors[0].message);
+                } else {
+                    setBase64Pdf(result.data.generatePdfSlip.base64Pdf);
+                    saveUuid(insureeUuid);
+                }
+            };
+
+            const saveUuid = (uuid) => {
+                const newUuidList = [...uuidList, uuid];
+                setUuidList(newUuidList);
+                localStorage.setItem('uuidList', JSON.stringify(newUuidList));
+            };
+
+            const deleteUuid = (uuid) => {
+                const newUuidList = uuidList.filter(item => item !== uuid);
+                setUuidList(newUuidList);
+                localStorage.setItem('uuidList', JSON.stringify(newUuidList));
+            };
+
+            return (
+                <div className="flex">
+                    <Sidebar uuidList={uuidList} deleteUuid={deleteUuid} />
+                    <div className="flex-grow p-6">
+                        <h1 className="text-2xl font-bold mb-6">Generate openIMIS Insuree Card</h1>
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div>
+                                <label htmlFor="insureeUuid" className="block text-sm font-medium text-gray-700">Insuree UUID:</label>
+                                <input
+                                    type="text"
+                                    id="insureeUuid"
+                                    value={insureeUuid}
+                                    onChange={(e) => setInsureeUuid(e.target.value)}
+                                    required
+                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                />
+                            </div>
+                            <button type="submit" className="w-full inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Submit</button>
+                        </form>
+                        {error && <p className="mt-4 text-red-500">{error}</p>}
+                        {base64Pdf && (
+                            <div className="mt-6">
+                                <h2 className="text-xl font-bold mb-2">PDF Generated</h2>
+                                <iframe
+                                    src={`data:application/pdf;base64,${base64Pdf}`}
+                                    width="100%"
+                                    height="600px"
+                                    title="Generated PDF"
+                                    className="border rounded-md"
+                                ></iframe>
+                                <a href={`data:application/pdf;base64,${base64Pdf}`} download="generated.pdf" className="mt-4 inline-block px-4 py-2 bg-green-500 text-white font-semibold rounded-md shadow-md hover:bg-green-600">Download PDF</a>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            );
+        }
+
+        function Sidebar({ uuidList, deleteUuid }) {
+            return (
+                <div className="w-1/4 bg-gray-100 p-4 border-r border-gray-300">
+                    <h2 className="text-lg font-bold mb-4">Saved UUIDs</h2>
+                    <ul className="space-y-2">
+                        {uuidList.map((uuid, index) => (
+                            <li key={index} className="flex justify-between items-center bg-white p-2 rounded shadow">
+                                <span>{uuid}</span>
+                                <button onClick={() => deleteUuid(uuid)} className="text-red-500 hover:text-red-700">
+                                    Delete
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+    {% endverbatim %}
+</body>
+</html>

@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    .number-table {
+      border-collapse: collapse;
+      border-spacing: 5px;
+    }
+
+    .number-cell {
+      width: 40px;
+      /* Adjust the size of each box */
+      height: 40px;
+      /* Adjust the size of each box */
+      border: 1px solid #050505;
+      /* Border around each box */
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .border {
+      border-left: 3px dotted;
+      width: 0px;
+      margin-left: 8mm;
+      margin-right: 8mm;
+      height: 323mm;
+      float: left;
+    }
+
+
+
+    .top-scissor {
+      position: relative;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEcAAAAxCAYAAACIy7TDAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5QIXBRkZxPPf5AAABDVJREFUaN7tWm124joMvZJsB2ihHdqtzVpmLW9xs4/XfFjzI3FwTMgHTYYOVOfknFJwYt9cSVeygW/7tmAiRgHE10XjB8KlAcPDWgvnHESk/X+22ejDMcVYqwDUOae2+Tu+RESdc0pEo0y6K9vv90pEaoxRZlYAutvttI9RzKzGmIcCSEVklBX7/aFlkYjo29vbr7tGZbfbKRGpiExiw/PzszJz7Hr3zRprbWDN5DFZlrVj7jpbiQhUp2NDzKiqqh1z1+DMAQYAjDHw3k/TOVH0VgBKxP+ULxLRrN8XeQ5mHgVHAWhZliAiiAiYGaoeMVjOZV8arKqqrnLFIVDVWhtH+YQ9dQYwxihR97vj8fjf18lWT7OylWsC8VC2StXi4BUePgDmzcNOLAAvAvn0pIkm6vNRjm80+yIiZWYVkbP7OOf0RnFHmU/raoDoVcgpa2LnUmbuROslAiIzg4g6KRIAsmyDj4//aW1wRERVFaoKblJ1mqEAwHsf1k4XBVBCw8Wu8AaNMb0uuJZkTzOuiGiWZZplWWceWTZQlW/rgqy9wiLWACqmcqhnOguoF3SVNUmh/zlmXlykkf7HKec37hEoOldgjRkztxojdcF6mjp5rtZaiAiqqkJRFHPWPP+H1lpNH2KMBaCxry4u4MLlve+AJWJQVWUnbjALiICiKDrzsc6hyPOrYttVg1yWaf7xsTqrwn1DKVAzq34hIqYFrixPQDnnkF8JxiLgTHFBYYZXPXvrc5gTj4s/p98tuI51rck6n85sPcGyI07NJ4L2l7FjA9ZU1T2iZu+ylTkZnJFaKCjtfxuc8Iav0UlEpM2uQWv7w2EKs5bNmEszZKk0HgVcYmb13v/1QPypTqA9UTy4RKM5eHajqa+D14hCDZ9DOo8EYxSgrd6WOUSKJC33FG6LCkERA0Ch6lFV/kwHWWvrLl4i/pZgFs1xlVBlBzCu6dPOqeS9r+D96f7GWpRFQXE7In6+MQYiAu89qqpKwfqcC76/v/9Mg6MxRq21qxWgQz2gK7RMN6g3c08rcwD68vL6e/aNQ3dvrYo8brP2tS6Ox2VaF5v6YEArIYhOHYBUVrhspBee7BWvBkg6scPhZdW0/PL6+jsGKczDWtseLrgkDyjWJcsEVQIztdkqra2sdSiK/G/WQprGyZ5uIUQEeZ4Pxqar2DPU5Zu5HbsGMC1rUmGZKvjB0iRQcAygoSD6laT96IJ7gIzWdG4/ftRtRhHutEqDr/YBd6udhWFguN112G63U+enWR2cR39/kTmb6Q+7abE7daHxmIc5gjIXHO6GiYc6MDkOTlIP3jU4c4vfsizDCdP7BoeZkTdHSna7J50z7iGsVubTU3mywXj/J7uITn2h7XanQyo62ksnPIid7YvjrKkvvSn8URDSuN8Tn7qoez8e3j8WYzrWtEKGyqJv+7aF7A9ON3FmIFO9zgAAAABJRU5ErkJggg==);
+      width: 27px;
+      height: 27px;
+      background-size: 27px 27px;
+      /* resize: auto; */
+      margin-left: -12mm;
+      margin-top: 20mm;
+      transform: rotateZ(0deg);
+    }
+
+    .bottom-scissor {
+      position: relative;
+      background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEcAAAAxCAYAAACIy7TDAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5QIXBRkZxPPf5AAABDVJREFUaN7tWm124joMvZJsB2ihHdqtzVpmLW9xs4/XfFjzI3FwTMgHTYYOVOfknFJwYt9cSVeygW/7tmAiRgHE10XjB8KlAcPDWgvnHESk/X+22ejDMcVYqwDUOae2+Tu+RESdc0pEo0y6K9vv90pEaoxRZlYAutvttI9RzKzGmIcCSEVklBX7/aFlkYjo29vbr7tGZbfbKRGpiExiw/PzszJz7Hr3zRprbWDN5DFZlrVj7jpbiQhUp2NDzKiqqh1z1+DMAQYAjDHw3k/TOVH0VgBKxP+ULxLRrN8XeQ5mHgVHAWhZliAiiAiYGaoeMVjOZV8arKqqrnLFIVDVWhtH+YQ9dQYwxihR97vj8fjf18lWT7OylWsC8VC2StXi4BUePgDmzcNOLAAvAvn0pIkm6vNRjm80+yIiZWYVkbP7OOf0RnFHmU/raoDoVcgpa2LnUmbuROslAiIzg4g6KRIAsmyDj4//aW1wRERVFaoKblJ1mqEAwHsf1k4XBVBCw8Wu8AaNMb0uuJZkTzOuiGiWZZplWWceWTZQlW/rgqy9wiLWACqmcqhnOguoF3SVNUmh/zlmXlykkf7HKec37hEoOldgjRkztxojdcF6mjp5rtZaiAiqqkJRFHPWPP+H1lpNH2KMBaCxry4u4MLlve+AJWJQVWUnbjALiICiKDrzsc6hyPOrYttVg1yWaf7xsTqrwn1DKVAzq34hIqYFrixPQDnnkF8JxiLgTHFBYYZXPXvrc5gTj4s/p98tuI51rck6n85sPcGyI07NJ4L2l7FjA9ZU1T2iZu+ylTkZnJFaKCjtfxuc8Iav0UlEpM2uQWv7w2EKs5bNmEszZKk0HgVcYmb13v/1QPypTqA9UTy4RKM5eHajqa+D14hCDZ9DOo8EYxSgrd6WOUSKJC33FG6LCkERA0Ch6lFV/kwHWWvrLl4i/pZgFs1xlVBlBzCu6dPOqeS9r+D96f7GWpRFQXE7In6+MQYiAu89qqpKwfqcC76/v/9Mg6MxRq21qxWgQz2gK7RMN6g3c08rcwD68vL6e/aNQ3dvrYo8brP2tS6Ox2VaF5v6YEArIYhOHYBUVrhspBee7BWvBkg6scPhZdW0/PL6+jsGKczDWtseLrgkDyjWJcsEVQIztdkqra2sdSiK/G/WQprGyZ5uIUQEeZ4Pxqar2DPU5Zu5HbsGMC1rUmGZKvjB0iRQcAygoSD6laT96IJ7gIzWdG4/ftRtRhHutEqDr/YBd6udhWFguN112G63U+enWR2cR39/kTmb6Q+7abE7daHxmIc5gjIXHO6GiYc6MDkOTlIP3jU4c4vfsizDCdP7BoeZkTdHSna7J50z7iGsVubTU3mywXj/J7uITn2h7XanQyo62ksnPIid7YvjrKkvvSn8URDSuN8Tn7qoez8e3j8WYzrWtEKGyqJv+7aF7A9ON3FmIFO9zgAAAABJRU5ErkJggg==);
+      width: 27px;
+      height: 27px;
+      background-size: 27px 27px;
+      /* resize: auto; */
+      margin-left: -12mm;
+      margin-top: 290mm;
+      transform: rotateZ(0deg);
+    }
+
+    .finger {
+      width: 170px;
+      height: 200px;
+      border: 2px solid;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      padding: 8px;
+      text-align: left;
+    }
+
+    .column1 {
+      width: 10%;
+    }
+
+    .column2 {
+      width: 50%;
+    }
+
+    .column3 {
+      width: 40%;
+    }
+
+    .column21 {
+      width: 33%;
+    }
+
+    .column22 {
+      width: 33%;
+    }
+
+    .column23 {
+      width: 33%;
+    }
+
+    .rotated-table {
+      border-collapse: collapse;
+      border: 1px solid black;
+      -webkit-transform: rotate(90deg);
+      transform-origin: left top;
+      white-space: nowrap;
+    }
+
+    .rotated-table th,
+    .rotated-table td {
+      padding: 5px 10px;
+      border: 1px solid black;
+    }
+
+    .container {
+      display: flex;
+    }
+
+    .box {
+      width: 50px;
+      /* Adjust the size of each box */
+      height: 50px;
+      /* Adjust the size of each box */
+      background-color: #ccc;
+      /* Background color of each box */
+      text-align: center;
+      line-height: 50px;
+      /* Should be equal to height for vertical alignment */
+      margin-right: 10px;
+      /* Adjust spacing between boxes */
+    }
+
+    .table-container {
+      border: 1px solid black;
+      /* Border for the outer rectangle */
+      display: inline-block;
+      /* Make container fit the content */
+      padding: 10px;
+      /* Optional: Add padding for space between table and border */
+    }
+
+    .pink {
+      background-color: pink;
+    }
+
+    .lightgrey {
+      background-color: rgb(216, 224, 213);
+    }
+    .no-border {
+  border: 0;
+}
+  </style>
+</head>
+
+<body>
+  
+
+  <div {% if forloop.counter > 1 %} style="page-break-before:always;" {% endif %} class="page">
+    <div class="table-container {% if forloop.counter == 1 %} pink {% else %} lightgrey{% endif %}">
+      <table>
+        <thead>
+
+        </thead>
+        <tbody>
+          {% for i in insurees|slice:"0::5" %}
+          <tr>
+            <td class="column1" style="display: inline-block; padding: 5px; width: 250px; text-align: justify; margin-right: 10px;">
+              <ol type="1">
+                {% for item in conditions %}
+                  <li>{{ item }}</li>
+                {% endfor %}
+              </ol>
+            </td>
+            <td style="width: 100%; margin: 0 20px 0 20px">
+              <table class="secondary-table" border="1" style="-webkit-transform: rotate(90deg);">
+                <tr>
+                  <td colspan="5" style="border: none;">Family Information</td>
+                </tr>
+                <tr style="height: 24px;">
+                  <th>s.no.</th>
+                  <th>Full name</th>
+                  <th>DOB</th>
+                  <th>ID</th>
+                  <th>Gender</th>
+                </tr>
+          
+                {% for insuree in insurees|slice:":5" %}
+                <tr style="height: 20px;">
+                  <td style="text-align: center;">{{ forloop.counter }}</td>
+                  <td>{{ insuree.other_names }} {{ insuree.last_name }}</td>
+                  <td>{{ insuree.dob|date:"Y-m-d" }}</td>
+                  <td>{{ insuree.chf_id }}</td>
+                  <td>{{ insuree.gender.gender }}</td>
+                </tr>
+                {% endfor %}
+              </table>
+            </td>
+            <td style="border: none; width: 300px">
+              <p style="text-align:center;">
+                <img src="https://release.openimis.org/front/static/media/openIMIS.f3351d9a.png" width="120px" height="100px" />
+              </p>
+              <p style="text-align: center; margin: 5px;">Name: {{insuree.other_names}} {{insuree.last_name}}</p>
+              <p style="text-align: center; margin: 5px;">Insurance No. {{insuree.chf_id}}</p>
+              <p style="text-align: center; margin: 5px;">D.O.B {{insuree.dob|date:"Y-m-d"}}</p>
+              <p style="text-align: center; margin: 5px;">Gender: {{insuree.gender.gender}}</p>
+              <table class="tertiary-table">
+                <tr>
+                  {% for arr in chfid_array %}
+                    <td style="width: 20px; text-align: center; border: 1px solid #000;">{{ arr }}</td>
+                    <td style="width: 20px; text-align: center; border: none;">-</td>
+                  {% endfor %}
+                </tr>
+              </table>
+          
+              <p style="text-align: center; margin-top: 20px;"><p style="text-align: center; margin: 5px;">{{insuree.health_facility.name}}</p></p>
+              {% if insuree.current_address %}<p style="text-align: center;"><p style="text-align: center; margin: 5px;">{{insuree.current_address}}</p>{% endif %}</p>
+            </td>
+          </tr>
+          {% endfor %}
+          
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-top: 25px;"></div>
+    <!-- <div class="border" style="-webkit-transform: rotate(0deg);"></div> -->
+    <!-- <i class="glyphicon glyphicon-scissors top-scissor"></i>
+  <i class="glyphicon glyphicon-scissors bottom-scissor"></i> -->
+
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEcAAAAxCAYAAACIy7TDAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5QIXBRkZxPPf5AAABDVJREFUaN7tWm124joMvZJsB2ihHdqtzVpmLW9xs4/XfFjzI3FwTMgHTYYOVOfknFJwYt9cSVeygW/7tmAiRgHE10XjB8KlAcPDWgvnHESk/X+22ejDMcVYqwDUOae2+Tu+RESdc0pEo0y6K9vv90pEaoxRZlYAutvttI9RzKzGmIcCSEVklBX7/aFlkYjo29vbr7tGZbfbKRGpiExiw/PzszJz7Hr3zRprbWDN5DFZlrVj7jpbiQhUp2NDzKiqqh1z1+DMAQYAjDHw3k/TOVH0VgBKxP+ULxLRrN8XeQ5mHgVHAWhZliAiiAiYGaoeMVjOZV8arKqqrnLFIVDVWhtH+YQ9dQYwxihR97vj8fjf18lWT7OylWsC8VC2StXi4BUePgDmzcNOLAAvAvn0pIkm6vNRjm80+yIiZWYVkbP7OOf0RnFHmU/raoDoVcgpa2LnUmbuROslAiIzg4g6KRIAsmyDj4//aW1wRERVFaoKblJ1mqEAwHsf1k4XBVBCw8Wu8AaNMb0uuJZkTzOuiGiWZZplWWceWTZQlW/rgqy9wiLWACqmcqhnOguoF3SVNUmh/zlmXlykkf7HKec37hEoOldgjRkztxojdcF6mjp5rtZaiAiqqkJRFHPWPP+H1lpNH2KMBaCxry4u4MLlve+AJWJQVWUnbjALiICiKDrzsc6hyPOrYttVg1yWaf7xsTqrwn1DKVAzq34hIqYFrixPQDnnkF8JxiLgTHFBYYZXPXvrc5gTj4s/p98tuI51rck6n85sPcGyI07NJ4L2l7FjA9ZU1T2iZu+ylTkZnJFaKCjtfxuc8Iav0UlEpM2uQWv7w2EKs5bNmEszZKk0HgVcYmb13v/1QPypTqA9UTy4RKM5eHajqa+D14hCDZ9DOo8EYxSgrd6WOUSKJC33FG6LCkERA0Ch6lFV/kwHWWvrLl4i/pZgFs1xlVBlBzCu6dPOqeS9r+D96f7GWpRFQXE7In6+MQYiAu89qqpKwfqcC76/v/9Mg6MxRq21qxWgQz2gK7RMN6g3c08rcwD68vL6e/aNQ3dvrYo8brP2tS6Ox2VaF5v6YEArIYhOHYBUVrhspBee7BWvBkg6scPhZdW0/PL6+jsGKczDWtseLrgkDyjWJcsEVQIztdkqra2sdSiK/G/WQprGyZ5uIUQEeZ4Pxqar2DPU5Zu5HbsGMC1rUmGZKvjB0iRQcAygoSD6laT96IJ7gIzWdG4/ftRtRhHutEqDr/YBd6udhWFguN112G63U+enWR2cR39/kTmb6Q+7abE7daHxmIc5gjIXHO6GiYc6MDkOTlIP3jU4c4vfsizDCdP7BoeZkTdHSna7J50z7iGsVubTU3mywXj/J7uITn2h7XanQyo62ksnPIid7YvjrKkvvSn8URDSuN8Tn7qoez8e3j8WYzrWtEKGyqJv+7aF7A9ON3FmIFO9zgAAAABJRU5ErkJggg==" width="25px" style="-webkit-transform: rotate(180deg);">
+  ...............................................................................................................................................................................................................................................................
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEcAAAAxCAYAAACIy7TDAAAABmJLR0QA/wD/AP+gvaeTAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAB3RJTUUH5QIXBRkZxPPf5AAABDVJREFUaN7tWm124joMvZJsB2ihHdqtzVpmLW9xs4/XfFjzI3FwTMgHTYYOVOfknFJwYt9cSVeygW/7tmAiRgHE10XjB8KlAcPDWgvnHESk/X+22ejDMcVYqwDUOae2+Tu+RESdc0pEo0y6K9vv90pEaoxRZlYAutvttI9RzKzGmIcCSEVklBX7/aFlkYjo29vbr7tGZbfbKRGpiExiw/PzszJz7Hr3zRprbWDN5DFZlrVj7jpbiQhUp2NDzKiqqh1z1+DMAQYAjDHw3k/TOVH0VgBKxP+ULxLRrN8XeQ5mHgVHAWhZliAiiAiYGaoeMVjOZV8arKqqrnLFIVDVWhtH+YQ9dQYwxihR97vj8fjf18lWT7OylWsC8VC2StXi4BUePgDmzcNOLAAvAvn0pIkm6vNRjm80+yIiZWYVkbP7OOf0RnFHmU/raoDoVcgpa2LnUmbuROslAiIzg4g6KRIAsmyDj4//aW1wRERVFaoKblJ1mqEAwHsf1k4XBVBCw8Wu8AaNMb0uuJZkTzOuiGiWZZplWWceWTZQlW/rgqy9wiLWACqmcqhnOguoF3SVNUmh/zlmXlykkf7HKec37hEoOldgjRkztxojdcF6mjp5rtZaiAiqqkJRFHPWPP+H1lpNH2KMBaCxry4u4MLlve+AJWJQVWUnbjALiICiKDrzsc6hyPOrYttVg1yWaf7xsTqrwn1DKVAzq34hIqYFrixPQDnnkF8JxiLgTHFBYYZXPXvrc5gTj4s/p98tuI51rck6n85sPcGyI07NJ4L2l7FjA9ZU1T2iZu+ylTkZnJFaKCjtfxuc8Iav0UlEpM2uQWv7w2EKs5bNmEszZKk0HgVcYmb13v/1QPypTqA9UTy4RKM5eHajqa+D14hCDZ9DOo8EYxSgrd6WOUSKJC33FG6LCkERA0Ch6lFV/kwHWWvrLl4i/pZgFs1xlVBlBzCu6dPOqeS9r+D96f7GWpRFQXE7In6+MQYiAu89qqpKwfqcC76/v/9Mg6MxRq21qxWgQz2gK7RMN6g3c08rcwD68vL6e/aNQ3dvrYo8brP2tS6Ox2VaF5v6YEArIYhOHYBUVrhspBee7BWvBkg6scPhZdW0/PL6+jsGKczDWtseLrgkDyjWJcsEVQIztdkqra2sdSiK/G/WQprGyZ5uIUQEeZ4Pxqar2DPU5Zu5HbsGMC1rUmGZKvjB0iRQcAygoSD6laT96IJ7gIzWdG4/ftRtRhHutEqDr/YBd6udhWFguN112G63U+enWR2cR39/kTmb6Q+7abE7daHxmIc5gjIXHO6GiYc6MDkOTlIP3jU4c4vfsizDCdP7BoeZkTdHSna7J50z7iGsVubTU3mywXj/J7uITn2h7XanQyo62ksnPIid7YvjrKkvvSn8URDSuN8Tn7qoez8e3j8WYzrWtEKGyqJv+7aF7A9ON3FmIFO9zgAAAABJRU5ErkJggg==" width="25px">
+
+  <div style="margin-top: 20px;"></div>
+    <div class="table-container {% if forloop.counter == 1 %} pink {% else %} lightgrey{% endif %}">
+      <table>
+        <thead>
+
+        </thead>
+        <tbody>
+          <tr>
+            <td class="column21">
+              <!-- Content for column 1 -->
+               <p>
+                The stamped circle represents the eligibility of the In
+               </p>
+              <img src="https://release.openimis.org/front/static/media/openIMIS.f3351d9a.png" width="120px"
+              height="100px" />
+            </td>
+            <td class="column22">
+              <!-- Content for column 2 -->
+              {{ current_year_html|safe }}
+            </td>
+            <td class="column23">
+              <!-- Content for column 2 -->
+              {{ next_year_html|safe }}
+            </td>
+          </tr>
+          <!-- Add more rows as needed -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+    <div style="margin-top: 50px;"></div>
+  <hr style="border-top: dotted 2px;" />
+  
+</body>
+
+</html>
