@@ -11,8 +11,8 @@ class GeneratePdfSlip(graphene.Mutation):
 
     def mutate(self, info, insuree_uuid, slip_type=None):
         user = info.context.user
-        # if not user.is_authenticated:
-        #     raise Exception("You do not have permission to access this resource.")
+        if not user.is_authenticated:
+            raise Exception("You do not have permission to access this resource.")
         
         pdf_base64 = PDFGenerationService.generate_pdf(user, insuree_uuid, slip_type)
         return GeneratePdfSlip(base64_pdf=pdf_base64)

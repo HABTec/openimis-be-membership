@@ -5,18 +5,12 @@ MODULE_NAME = 'membership'
 DEFAULT_CFG = {
 }
 
-
-
 class MembershipCardConfig(AppConfig):
     name = MODULE_NAME
 
     gql_query_membership_generation_perms = None #todo
 
     membership_slip_name = f"membershi_card" #todo, head of family name ?
-    card_print_config = {
-        "family" : 2,
-        "insuree": 1
-    }
     wkhtml_cmd_options_for_printing = {
         # 'margin-top': 3,
         "orientation": "Portrait",

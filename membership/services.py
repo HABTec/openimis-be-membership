@@ -18,7 +18,6 @@ from django.conf import settings
 class PDFGenerationService:
     @staticmethod
     def generate_pdf(user, insuree_uuid, slip_type=None):
-        # import pdb;pdb.set_trace()
         insuree = Insuree.objects.filter(uuid=insuree_uuid, validity_to=None)
         insuree_families = Insuree.objects.filter(family=insuree.first().family).order_by("id").all()
         if  not insuree:
