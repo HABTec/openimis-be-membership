@@ -80,3 +80,28 @@ def get_template_by_os():
 
     return template_name
 ```
+
+# Usages
+## Available Mutations
+- GeneratePdfSlip.Field()
+
+Client Side
+```
+const query = `
+    mutation {
+      generatePdfSlip(insureeUuid: "${insureeUuid}") {
+        base64Pdf
+      }
+    }
+`;
+```
+
+### Testing when DEBUG is True 
+
+```
+python
+if settings.DEBUG:
+    urlpatterns += [
+        path('membership-card/test', index, name='index'),
+    ]
+```
