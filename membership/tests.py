@@ -1,26 +1,25 @@
 import base64
 from django.test import TestCase, Client
-from django.contrib.auth.models import User
 from graphene.test import Client as GrapheneClient
-from your_app_name.schema import schema
-from your_app_name.models import Insuree, Family
+from insuree.models import Insuree, Family
+from core.schema import schema  # Import the schema from your schema.py file
 
 class GeneratePdfSlipTestCase(TestCase):
     def setUp(self):
         self.client = GrapheneClient(schema)
         self.django_client = Client()
 
-        # Create a test user
-        self.user = User.objects.create_user(username='testuser', password='testpass')
+        # Create test data if not present
+        if not Family.objects.filter(uuid="test-family-uuid").exists():
+            self.family = Family.objects.create(uuid="test-family-uuid")
         
-        # Create test data
-        self.family = Family.objects.create(uuid="test-family-uuid")
-        self.insuree = Insuree.objects.create(
-            uuid="test-insuree-uuid", 
-            family=self.family, 
-            chf_id="123456789", 
-            head=True
-        )
+        if not Insuree.objects.filter(uuid="test-insuree-uuid").exists():
+            self.insuree = Insuree.objects.create(
+                uuid="test-insuree-uuid", 
+                family=self.family, 
+                chf_id="123456789", 
+                head=True
+            )
 
     def test_generate_pdf_slip_unauthenticated(self):
         mutation = '''
@@ -35,21 +34,20 @@ class GeneratePdfSlipTestCase(TestCase):
         self.assertEqual(response['errors'][0]['message'], 'You do not have permission to access this resource.')
 
     def test_generate_pdf_slip_authenticated(self):
-        self.django_client.login(username='testuser', password='testpass')
+        # Ensure there is at least one Insuree in the database
+        insuree = Insuree.objects.first()
+        family_uuid = insuree.family.uuid if insuree else "test-family-uuid"
 
-        mutation = '''
-        mutation {
-          generate_pdf_slip(familyUuid: "test-family-uuid") {
+        mutation = f'''
+        mutation {{
+          generate_pdf_slip(familyUuid: "{family_uuid}") {{
             base64Pdf
-          }
-        }
+          }}
+        }}
         '''
 
-        # Obtain the token for authenticated request
-        response = self.client.execute(
-            mutation,
-            context_value={'request': self.django_client.request()}
-        )
+        # Perform the GraphQL mutation
+        response = self.client.execute(mutation)
         self.assertNotIn('errors', response)
         self.assertIn('base64Pdf', response['data']['generate_pdf_slip'])
         self.assertTrue(response['data']['generate_pdf_slip']['base64Pdf'])
@@ -58,4 +56,5 @@ class GeneratePdfSlipTestCase(TestCase):
         pdf_content = base64.b64decode(response['data']['generate_pdf_slip']['base64Pdf'])
         self.assertGreater(len(pdf_content), 0)
 
-#python manage.py test your_app_name.tests.test_schema
+# To run the tests, use the following command:
+# python manage.py test your_app_name.tests.tests
