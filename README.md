@@ -95,6 +95,35 @@ const query = `
     }
 `;
 ```
+Sample Usage
+```
+const insureeUuid = "your-insuree-uuid";  // Replace with the actual UUID of the insuree
+const query = `
+    mutation {
+      generatePdfSlip(insureeUuid: "${insureeUuid}") {
+        base64Pdf
+      }
+    }
+`;
+
+// Example of how to use the mutation with a GraphQL client
+fetch('/graphql', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({ query }),
+})
+  .then(response => response.json())
+  .then(data => {
+    const base64Pdf = data.data.generatePdfSlip.base64Pdf;
+    console.log(base64Pdf);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+
+```
 
 ### Testing when DEBUG is True 
 
