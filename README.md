@@ -2,24 +2,27 @@
 
 This Django application, named `membership`, provides configurations for generating and printing membership cards. It includes the `MembershipCardConfig` class for configuration settings and the `PDFGenerationService` class for generating membership cards in PDF format.
 
-## Table of Contents
 
-- [Configuration](#configuration)
-  - [Module Name](#module-name)
-  - [Default Configuration](#default-configuration)
-  - [MembershipCardConfig Class](#membershipcardconfig-class)
-    - [Card Print Configuration](#card-print-configuration)
-    - [WKHTML Command Options for Printing](#wkhtml-command-options-for-printing)
-    - [Template Selection Based on OS](#template-selection-based-on-os)
-    - [Terms and Conditions](#terms-and-conditions)
-- [PDFGenerationService Class](#pdfgenerationservice-class)
-  - [Methods](#methods)
-    - [generate_pdf](#generate_pdf)
-    - [get_insuree_photo](#get_insuree_photo)
-    - [generate_eligibility_html](#generate_eligibility_html)
-- [Helper Functions](#helper-functions)
-  - [generate_conditions_html](#generate_conditions_html)
-  - [send_email](#send_email)
+# Requirements
+```
+Install the wkhtmltopdf static binary.
+
+This requires libfontconfig (on Ubuntu: sudo aptitude install libfontconfig).
+
+
+
+Installation
+Run pip install django-wkhtmltopdf.
+
+Add 'wkhtmltopdf' to INSTALLED_APPS in your settings.py.
+
+By default it will execute the first wkhtmltopdf command found on your PATH.
+
+If you can’t add wkhtmltopdf to your PATH, you can set WKHTMLTOPDF_CMD to a specific executable:
+
+e.g. in settings.py:
+```
+## Table of Contents
 
 ## Configuration
 
