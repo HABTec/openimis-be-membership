@@ -25,7 +25,8 @@ setup(
         'djangorestframework',
         'openimis-be-core',
         'openimis-be-insuree',
-        'django-wkhtmltopdf'
+        'django-wkhtmltopdf',
+        "djangorestframework-simplejwt"
     ],
     classifiers=[
         'Environment :: Web Environment',

@@ -12,6 +12,14 @@ import calendar
 from datetime import datetime, timedelta
 from django.conf import settings
 
+from datetime import datetime
+from insuree.models import Insuree, Family, InsureePhoto, FamilyType, ConfirmationType
+from location import models as location_models
+# from your_app.models import FamilyType, ConfirmationType
+from django.shortcuts import get_object_or_404
+import base64
+from django.core.files.base import ContentFile
+
 
 
 
@@ -130,3 +138,82 @@ def send_email(to_email, subject, context, text_template, html_template, attachm
     except Exception as e:
         print(e)
     return True
+
+
+
+
+
+
+
+
+def create_insuree(data, family=None):
+    """
+    Creates an Insuree instance and returns it.
+    """
+    insuree = Insuree.objects.create(
+        chf_id=data.get("chfid"),
+        last_name=data.get("lastName", ""),
+        other_names=data.get("givenName", ""),
+        phone=data.get("phone"),
+        dob=data.get("birthdate"),
+        email=data.get("email"),
+        head=True,
+        card_issued=False,
+        audit_user_id=-1,
+        family=family,
+    )
+    return insuree
+
+
+def create_family(data, head_insuree):
+    """
+    Creates a Family instance and returns it.
+    """
+    # family_type = get_object_or_404(FamilyType, name=data.get('familyType'))
+    # confirmation_type = get_object_or_404(ConfirmationType, name=data.get('confirmationType'))
+    
+    family = Family.objects.create(
+        head_insuree=head_insuree,
+        location=location_models.Location.objects.filter(id=int(data.get("healthFacility")), validity_to=None).first(),  # Adjust as needed
+        poverty=data.get("poverty", False),
+        family_type=FamilyType.objects.filter(code="C").first(),
+        address=data.get("addressDetail", ""),
+        confirmation_no=data.get("confirmationNumber", ""),
+        confirmation_type=ConfirmationType.objects.filter(code="A").first(),
+        audit_user_id=-1,
+    )
+    return family
+
+
+def base64_to_file(base64_string, file_name):
+    if ';base64,' in base64_string:
+        format, imgstr = base64_string.split(';base64,')
+        ext = format.split('/')[-1]
+    else:
+        imgstr = base64_string
+        ext = 'jpg'  # Default to jpg if the format is not specified
+
+    return ContentFile(base64.b64decode(imgstr), name=f"{file_name}.{ext}")
+
+def create_insuree_photo(insuree, photo_data, user, now):
+    """
+    Creates an InsureePhoto instance and associates it with the given Insuree.
+    """
+    from insuree.services import handle_insuree_photo
+    
+    # Convert base64 string to Django file
+    photo_file = base64_to_file(photo_data, insuree.chf_id)
+    
+    # Extract the binary data from the ContentFile object
+    photo_binary_data = photo_file.read()
+    
+    # Prepare the data dictionary with the binary photo data
+    data = {
+        'photo': photo_binary_data,  # Binary data extracted from the ContentFile
+        'officer_id' : 1,
+        'date' : now.today()
+    }
+    
+    # Call handle_insuree_photo with the prepared data
+    handle_insuree_photo(user, now, insuree, data)
+    

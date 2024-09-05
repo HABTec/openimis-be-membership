@@ -30,7 +30,8 @@ class MembershipCardConfig(AppConfig):
         if system == "Windows":
             template_name = "card_template_osx.html" #not tested for windows
         elif system == "Darwin":
-            template_name = "card_template_linux.html"
+            template_name = "card_template_osx.html" 
+            # template_name = "card_template_linux.html"
         elif system == "Linux":
             template_name = "card_template_linux.html"
         else:
