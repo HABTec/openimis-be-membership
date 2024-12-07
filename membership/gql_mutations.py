@@ -1,7 +1,6 @@
 
 import graphene
-from .services import PDFGenerationService  # Adjust the import based on your project structure
-
+from .services import PDFGenerationService  
 class GeneratePdfSlip(graphene.Mutation):
     class Arguments:
         insuree_uuid = graphene.String(required=True)
