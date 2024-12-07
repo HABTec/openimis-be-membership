@@ -2,6 +2,7 @@
 from rest_framework import serializers, viewsets, status
 from insuree.models import Insuree, InsureePolicy, Family
 from policy.models import Policy
+from claim.models import Claim
 from location import models as location_models
 from datetime import datetime, timedelta
 
@@ -113,4 +114,19 @@ class LocationSerializer(serializers.ModelSerializer):
         model = location_models.Location
         fields = "__all__"
 
+class ClaimSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Claim
+        fields = '__all__'
 
+
+class UserRegistrationSerializer(serializers.Serializer):
+    chfid = serializers.CharField(max_length=50)  # Insuree ID
+    head_chfid = serializers.CharField(max_length=50)  # Head Insuree ID
+    dob = serializers.DateField()  # Date of Birth (YYYY-MM-DD)
+    phone = serializers.CharField(max_length=15, required=False)  # Optional phone
+    email = serializers.EmailField(required=False)  # Optional email
+
+class OTPValidationSerializer(serializers.Serializer):
+    phone = serializers.CharField(max_length=15)
+    otp = serializers.CharField(max_length=6)

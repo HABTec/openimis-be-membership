@@ -1,0 +1,136 @@
+{
+    "app_version": "1.0.0",
+    "api_base_url": "https://api.your.domain.com",
+    "support_email": "info@tinker.com.np",
+    "develop_by": "Tinker technologies",
+    "supported_partners": [
+        {
+            "name": "openIMIS",
+            "logo": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTn8JOjtdC6rYuak2CJ3tcNJvlPiHKmNOtdrQ&s"
+        },
+        {
+            "name": "AeHIN",
+            "logo": "https://www.asiaehealthinformationnetwork.org/wp-content/uploads/2020/12/web_logo_default.png"
+        },
+        {
+            "name": "Health Insurance Board Nepal",
+            "logo": "https://hib.gov.np/site/img/shs.png"
+        },
+        {
+            "name": "Tinker Technology",
+            "logo": "https://tinker.com.np/static/assets/images/logo/tt-dark.png"
+        }
+    ],
+    "family_type_codes": {
+        "Council": "C",
+        "Organization": "G",
+        "Household": "H",
+        "Other": "O",
+        "Priests": "P",
+        "Students": "S",
+        "Teachers": "T"
+    },
+    "contributions_requirements": {
+        "premium_amount": 3500,
+        "per_member": 700,
+        "Currency": "Npr",
+        "validity": "1 years"
+    },
+    "confirmation_types": {
+        "local council": "A",
+        "municipality": "B",
+        "State": "C",
+        "Other": "D"
+    },
+    "languages": {
+        "fr_FR": {
+            "selected_language": "Fr",
+            "greeting": "Bonjour",
+            "enrollment": "Inscription",
+            "theme": "Thème",
+            "openimis": "openIMIS",
+            "poverty_status": "Statut de Pauvreté",
+            "search": "Recherche",
+            "policy": "Politique",
+            "search_for_insuree": "Rechercher un assuré...",
+            "new_enrollment": "Nouvelle Inscription",
+            "head": "Titulaire",
+            "head_chfid_is_required": "Le CHFID du titulaire est requis",
+            "head_chfid": "CHFID du Titulaire",
+            "last_name": "Nom de Famille",
+            "given_name": "Prénom",
+            "phone": "Téléphone",
+            "chfid": "CHFID",
+            "offline_enrollment": "Enrolls",
+            "search_instruction": "Tapez votre identifiant de membre ou scannez avec le code QR",
+            "logout_message": "You are about to logout"
+        },
+        "en_US": {
+            "selected_language": "En",
+            "greeting": "Hello",
+            "enrollment": "Enrollment",
+            "theme": "Theme",
+            "openimis": "openIMIS",
+            "poverty_status": "Poverty Status",
+            "search": "Search",
+            "policy": "Policy",
+            "search_for_insuree": "Search for Insuree...",
+            "new_enrollment": "New Enrollment",
+            "head": "Head",
+            "head_chfid_is_required": "Head CHFID is required",
+            "head_chfid": "Head Chfid",
+            "last_name": "Last Name",
+            "given_name": "Given Name",
+            "phone": "Phone",
+            "chfid": "CHFID",
+            "offline_enrollment": "Enrolls",
+            "search_instruction": "Type your membership ID or scan with QR code",
+            "logout_message": "Vous êtes sur le point de vous déconnecter"
+        },
+        "np_NP": {
+            "selected_language": "NP",
+            "greeting": "Hello",
+            "enrollment": "Enrollment",
+            "theme": "Theme",
+            "openimis": "openIMIS",
+            "poverty_status": "Poverty Status",
+            "search": "खोजी",
+            "enrollment": "भर्ना",
+            "policy": "नीति",
+            "search_for_insuree": "विमित खोजी गर्नुहोस...",
+            "new_enrollment": "नयाँ दर्ता",
+            "head": "प्रमुख",
+            "head_chfid_is_required": "घरमुलिको विमित नं अनिवार्य छ",
+            "head_chfid": "घरमुलिको विमित नं",
+            "last_name": "नाम",
+            "given_name": "थर",
+            "phone": "फोन",
+            "chfid": "विमित नं",
+            "offline_enrollment": "भर्ना बिबरण",
+            "search_instruction": "बीमा नं अथवा QR कोड स्क्यान गर्नुहोस",
+            "logout_message": "लगआउट गर्दैहुनुहुन्छ ?"
+        },
+        "lo_LA": {
+            "selected_language": "ພາສາລາວ",
+            "greeting": "ສະບາຍດີ",
+            "enrollment": "ລົງທະບຽນ",
+            "theme": "ຫົວຂໍ້",
+            "openimis": "openIMIS",
+            "poverty_status": "ສະຖານະຍາກຈົນ",
+            "search": "ຄົ້ນຫາ",
+            "policy": "ນະໂຍບາຍ",
+            "search_for_insuree": "ຄົ້ນຫາຜູ້ໄດ້ຮັບປະກັນ...",
+            "new_enrollment": "ລົງທະບຽນໃຫມ່",
+            "head": "ຫົວໜ້າ",
+            "head_chfid_is_required": "ຕ້ອງການເລກປະຈໍາຕົວ CHFID ຂອງຫົວໜ້າ",
+            "head_chfid": "ເລກປະຈໍາຕົວ CHFID ຂອງຫົວໜ້າ",
+            "last_name": "ນາມສະກຸນ",
+            "given_name": "ຊື່",
+            "phone": "ໂທລະສັບ",
+            "chfid": "CHFID",
+            "offline_enrollment": "ລົງທະບຽນແບບອອບລາຍ",
+            "search_instruction": "ພິມເລກປະຈໍາຕົວຂອງທ່ານ ຫຼື ສະແກນດ້ວຍລະຫັດ QR",
+            "logout_message": "ທ່ານກຳລັງຈະອອກຈາກລະບົບ"
+        }
+    }
+}

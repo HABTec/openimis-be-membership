@@ -7,7 +7,6 @@ DEFAULT_CFG = {
 
 class MembershipCardConfig(AppConfig):
     name = MODULE_NAME
-
     gql_query_membership_generation_perms = None #todo
 
     membership_slip_name = f"membershi_card" #todo, head of family name ?
