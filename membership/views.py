@@ -197,7 +197,7 @@ class RegisterAPIView(APIView):
             try:
                 head_insuree = Insuree.objects.get(chf_id=head_chfid, head=True)
                 insuree = Insuree.objects.get(
-                    chf_id=chfid, family=head_insuree.family, dob=dob
+                    chf_id=chfid, family=head_insuree.family
                 )
             except Insuree.DoesNotExist:
                 return Response(
@@ -393,12 +393,13 @@ class Signin(APIView):
         # Reuse the `authenticate_and_get_token` function for authentication
         try:
             user = User.objects.filter(username=username).first()
+            insuree_id = db_helper.get_insuree_id_by_user_id(user.i_user_id)
             is_insuree = db_helper.is_insuree(user.i_user_id) if user else False
             print("is_insuree", is_insuree, "user", user.i_user_id, "user_dict", user.__dict__)
             token_data = authenticate_and_get_token(username, password, request)
             insuree_info = {}
             if is_insuree:
-                insuree = Insuree.objects.filter(id=user.i_user_id).first()  # Adjust field name as needed
+                insuree = Insuree.objects.filter(id=insuree_id).first()
                 if insuree:
                     insuree_info = {
                         "first_name": insuree.other_names,
