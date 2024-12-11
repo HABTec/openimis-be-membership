@@ -432,56 +432,17 @@ class Signin(APIView):
 
 
 
-def extract_and_store_payment(post_body):
-    db = SQLiteHelper()
-    try:
-        # Extract family
-        family = post_body.get('family')
-        family_id = family.get('id')
-
-        # Extract payments JSON
-        payments = post_body.get('payments')
-        paypal_transaction_id = payments.get('id')  # PayPal transaction ID
-
-        # Insert payment JSON into SQLite
-        db.insert_payment_transaction(
-            family_id=family_id,
-            paypal_transaction_id=paypal_transaction_id,
-            payment_json=payments
-        )
-        print("Payment JSON inserted successfully!")
-        return payments
-
-    except Exception as e:
-        print(f"Error occurred: {e}")
-    finally:
-        db.close()
-
 class EnrollmentView(APIView):
     #authentication_classes = [SimpleJWTAuthentication]
     #permission_classes = [IsAuthenticated]
     @transaction.atomic
     def post(self, request):
         print("request", request.data)
-        import json
         insuree = create_insuree_and_family(request) #head_insuree
-        # insuree_policy = create_insuree_policy(insuree)
-        # import pdb;pdb.set_trace()
-        amount=25.00
-        payments = extract_and_store_payment(request.data)
-        try:
-            from .paypal_service import PayPalService
-            amount = float((payments['transactions'][0]['amount']['total'])) * float(135.00) #nep conversion
-            # amount = PayPalService.convert_currency("USD", "NPR", amount)
-
-        except (KeyError, IndexError, json.JSONDecodeError):
-           pass 
-        
-        create_contribution(
-            insuree.insuree_policies.first().policy,
-            receipt=payments.get('id'),
-            amount=amount,
-            )
+        insuree_policy = create_insuree_policy(insuree)
+        import pdb;pdb.set_trace()
+        print("insuree", insuree)
+        create_contribution(insuree_policy)
         return Response({"Success": True}, status=status.HTTP_201_CREATED)
 
 
@@ -904,59 +865,30 @@ class NationalIDView(APIView):
 
 
 # class EsewaVerifyView(View):
-#     def get(self,request,*args,**kwargs):
-#         import xml.etree.ElementTree as ET
-#         oid=request.GET.get('oid')
-#         amt=request.GET.get('amt')
-#         refId=request.GET.get('refId')
-#         url ="https://uat.esewa.com.np/epay/transrec"
-#         d = {
-#             'amt': amt,
-#             'scd': 'epay_payment',
-#             'rid':refId ,
-#             'pid':oid,
-#         }
-#         resp = req.post(url, d)
-#         root = ET.fromstring(resp.content)
-#         status=root[0].text.strip()
-#         order_id=oid.split("_")[1]
-#         order_obj=Order.objects.get(id=order_id)
-#         if status == "Success":
-#             order_obj.is_ordered = True
-#             order_obj.save()
-#             cart = CartItem.objects.filter(user=request.user)
-#             cart.delete()
-#             return redirect('order_complete')
-#         else:
-#             order_obj.delete()
-#             messages.warning(request, 'Payment failed. Please try again.')
-#             return redirect('cart')
-
-
-
-class SaveFirebaseTokenView(APIView):
-    """
-    API view to save or update Firebase token for a user.
-    """
-    def post(self, request, *args, **kwargs):
-        user_id = request.data.get('user_id')
-        fcm_token = request.data.get('fcm_token')
-
-        # Validate inputs
-        if not user_id or not fcm_token:
-            return Response(
-                {"error": "user_id and fcm_token are required."},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Initialize SQLiteHelper
-        db_helper = SQLiteHelper()
-
-        # Save or update the Firebase token in the database
-        db_helper.insert_fcm_token(user_id, fcm_token)
-        db_helper.close()
-
-        return Response(
-            {"message": "Firebase token saved successfully."},
-            status=status.HTTP_201_CREATED
-        )
+    def get(self,request,*args,**kwargs):
+        import xml.etree.ElementTree as ET
+        oid=request.GET.get('oid')
+        amt=request.GET.get('amt')
+        refId=request.GET.get('refId')
+        url ="https://uat.esewa.com.np/epay/transrec"
+        d = {
+            'amt': amt,
+            'scd': 'epay_payment',
+            'rid':refId ,
+            'pid':oid,
+        }
+        resp = req.post(url, d)
+        root = ET.fromstring(resp.content)
+        status=root[0].text.strip()
+        order_id=oid.split("_")[1]
+        order_obj=Order.objects.get(id=order_id)
+        if status == "Success":
+            order_obj.is_ordered = True
+            order_obj.save()
+            cart = CartItem.objects.filter(user=request.user)
+            cart.delete()
+            return redirect('order_complete')
+        else:
+            order_obj.delete()
+            messages.warning(request, 'Payment failed. Please try again.')
+            return redirect('cart')

@@ -2,6 +2,7 @@ from .views import *
 from django.urls import path, include
 from django.conf import settings
 from .paypal_service import *
+# from membership.push_notification import SaveFirebaseTokenView
 #from .views import CreateUserWithInsureeRoleView
 
 
@@ -55,4 +56,13 @@ if settings.DEBUG:
         path("access-token/", GetAccessToken.as_view(), name="get_access_token"),
         path("create-payment/", CreatePayment.as_view(), name="create_payment"),
         path("execute-payment/", ExecutePayment.as_view(), name="execute_payment"),
+    ]
+
+    urlpatterns += [
+        path('payment/complete/', payment_complete, name='payment_complete'),
+
+    ]
+    urlpatterns += [
+        path('save_fcm_token/', SaveFirebaseTokenView.as_view(), name='save_fcm_token'),
+
     ]

@@ -188,34 +188,6 @@ def get_relationship(data):
         relation = Relation.objects.filter(relation=data).first()
     return relation
 
-def save_family_details(request_data, head_insuree):
-    # Extract json_content from request
-    import uuid
-    family_data = request_data.get('family', {})
-    json_content = family_data.get('json_content')
-
-    # Parse json_content
-    try:
-        parsed_json_content = json.loads(json_content)
-    except (TypeError, ValueError):
-        parsed_json_content = {}
-
-    # Assigning fields with dummy or parsed values
-    family = Family.objects.create(
-        uuid=family_data.get('uuid', str(uuid.uuid4())),
-        head_insuree=head_insuree,  # Replace with logic to retrieve the head insuree
-        location= None,#Location.objects.first(),  # Replace with logic for location
-        poverty=False,  # Default value
-        family_type=FamilyType.objects.first(),  # Replace with logic for family type
-        address=parsed_json_content.get('addressDetail', 'Unknown Address'),
-        is_offline=False,
-        ethnicity=parsed_json_content.get('ethnicity', 'X'),  # Dummy value
-        confirmation_no=parsed_json_content.get('confirmationNumber', '000000'),
-        confirmation_type=ConfirmationType.objects.first(),  # Replace with logic for confirmation type
-        audit_user_id=-1,  # Dummy user ID, replace with request.user.id if available
-    )
-
-    return family
 
 def create_insuree_and_family(request):
     """
@@ -225,7 +197,6 @@ def create_insuree_and_family(request):
     family_data = request.data.get("family")
 
     # Step 1: Find the head member (with isHead: 1)
-    # import pdb;pdb.set_trace()
     head_member = None
     for member in members:
         json_content = json.loads(member["json_content"])
@@ -236,17 +207,13 @@ def create_insuree_and_family(request):
     if not head_member:
         raise ValueError("No head member found with isHead: 1.")
 
-    #Create the head Insuree (pass request.user)
+    # Step 2: Create the head Insuree (pass request.user)
     head_insuree = create_insuree(head_member, family=None, user=request.user)
 
-    #Create the family with the head Insuree
-    family =  save_family_details(request.data, head_insuree)#create_family(family_data, head_insuree)
+    # Step 3: Create the family with the head Insuree
+    family = create_family(family_data, head_insuree)
 
-    head_insuree.family = family
-    head_insuree.save()
-
-    # policy = Policy.objects.first()
-    #Create the remaining members (excluding the head)
+    # Step 4: Create the remaining members (excluding the head)
     for member in members:
         if member != head_member:
             create_insuree(member, family, user=request.user)  # Pass request.user
@@ -260,9 +227,9 @@ def create_insuree(member, family=None, user=None):
     """
     # import pdb
 
-    # import pdb;pdb.set_trace()
+    # pdb.set_trace()
     print("member", member.pop('photo'))
-    # import pdb;pdb.set_trace()
+    # Handle case when json_content is None
     json_content = {}
     if member.get("json_content"):
         try:
@@ -283,7 +250,7 @@ def create_insuree(member, family=None, user=None):
         "last_name": json_content.get("lastName") if json_content.get("lastName") else "",
         "marital": "",  # Default value since it's not provided
         "photo": None,
-        "health_facility_id": json_content.get("healthFacility") if json_content.get('healthFacility') else None,
+        "health_facility_id": json_content.get("healthFacility"),
         "relationship": get_relationship(json_content.get("relationShip")),
         "status": InsureeStatus.ACTIVE,
         "status_reason": None,
@@ -293,12 +260,8 @@ def create_insuree(member, family=None, user=None):
     }
 
     # Create the Insuree instance
-    # import pdb;pdb.set_trace()
     insuree = Insuree.objects.create(**insuree_data)
-    insuree.family = family
-    insuree.save() #redundant should be above 
 
-    create_insuree_policy(insuree)
     # Handle photo if present
     if member.get("photo"):
         insuree.photo = create_insuree_photo(
@@ -369,7 +332,7 @@ def create_insuree_policy(insuree):
         policy=Policy.objects.first(),
         start_date=datetime.now(),
         enrollment_date=datetime.now(),
-        expiry_date=datetime.now() + timedelta(days=365), # depending upon country & payment this should be dynamic 
+        expiry_date=datetime.now() + timedelta(days=365),
         effective_date=datetime.now(),
         audit_user_id=-1,
     )
@@ -377,7 +340,7 @@ def create_insuree_policy(insuree):
 
 
 def create_contribution(
-    policy,
+    insuree_policy,
     receipt="None",
     amount=700.0 * 5,
     payer=None,
@@ -403,7 +366,7 @@ def create_contribution(
 
     # Create the Premium object
     Premium.objects.create(
-        policy=policy,
+        policy=insuree_policy.policy,
         payer=payer,  # Set the payer object
         amount=amount,
         receipt=receipt,
