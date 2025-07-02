@@ -220,6 +220,28 @@ class Membership(models.Model):
     def is_indigent(self):
         """Check if this is an indigent membership."""
         return not self.membership_type.is_paying
+        
+    @property
+    def membership_type_details(self):
+        """Return a dictionary with membership type details."""
+        return {
+            'id': self.membership_type.id,
+            'region': self.membership_type.region,
+            'area_type': self.membership_type.area_type,
+            'is_paying': self.membership_type.is_paying,
+            'levels_config': self.membership_type.levels_config,
+            'payments': self.membership_type.payments
+        }
+        
+    @property
+    def payment_info(self):
+        """Return payment information for this membership."""
+        return {
+            'level': self.level,
+            'amount': self.get_payment_amount(),
+            'is_indigent': self.is_indigent(),
+            'area_type': self.membership_type.area_type if hasattr(self, 'membership_type') else None
+        }
     
     @classmethod
     def create_membership_type(cls, region, area_type, levels_config, payments):
