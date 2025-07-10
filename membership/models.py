@@ -91,11 +91,16 @@ class MembershipType(models.Model):
     
     def _create_indigent_membership(self):
         """Create a corresponding indigent membership type for the same region and area type."""
+        if self.area_type == AreaType.MIXED:
+            # Always provide both keys, with one set to 1 and the other to 0
+            levels_config = {'urban': 0, 'rural': 1}
+        else:
+            levels_config = 1
         indigent_membership = MembershipType(
             region=self.region,
             area_type=self.area_type,
-            levels_config=1,  # Only one level (level 0) for indigent
-            payments=[0.0],   # Payment is always 0 for indigent
+            levels_config=levels_config,
+            payments=[0.0],
             is_paying=False
         )
         indigent_membership.save()
@@ -120,56 +125,30 @@ class MembershipType(models.Model):
 
     @classmethod
     def get_membership_payment(cls, region, area_type, level_number):
-        """
-        Class method to get payment amount for a membership.
-        
-        Args:
-            region (str): Name of the region
-            area_type (str): 'Rural', 'Urban', or 'Mixed'
-            level_number (int): The level number
-            
-        Returns:
-            float or None: The payment amount, or None if not found
-        """
         try:
-            # For indigent (level 0), we need to get the indigent membership
             is_paying = level_number != 0
-            
-            # For Mixed area type with level_number > 0, we need to determine if it's urban or rural
+
             if area_type == AreaType.MIXED and is_paying:
-                # Get the paying membership to check the levels configuration
                 paying_membership = cls.objects.get(
                     region=region,
                     area_type=area_type,
                     is_paying=True
                 )
-                
-                # Determine if the level_number corresponds to urban or rural
-                urban_levels = paying_membership.levels_config.get('urban', 0)
-                
-                if level_number <= urban_levels:
-                    area_type = AreaType.URBAN
+                idx = level_number - 1
+                if 0 <= idx < len(paying_membership.payments):
+                    return paying_membership.payments[idx]
                 else:
-                    area_type = AreaType.RURAL
-            
-            # Get the appropriate membership
+                    return None
+
             membership = cls.objects.get(
                 region=region,
                 area_type=area_type,
                 is_paying=is_paying
             )
-            
-            # For paying memberships, adjust the level number for rural areas in Mixed type
-            if is_paying and area_type == AreaType.RURAL and 'urban' in getattr(membership, 'levels_config', {}):
-                urban_levels = membership.levels_config.get('urban', 0)
-                level_number = level_number - urban_levels - 1
-            
             return membership.get_payment_amount(level_number)
-            
         except cls.DoesNotExist:
             return None
         except Exception as e:
-            # Log the error in production
             return None
 
 class Membership(models.Model):
